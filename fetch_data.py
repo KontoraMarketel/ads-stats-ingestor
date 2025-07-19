@@ -18,7 +18,7 @@ async def fetch_data(api_token: str, campaign_ids: list, load_date: str) -> list
     body = [{"id": cid, "dates": [yesterday]} for cid in campaign_ids]
     async with aiohttp.ClientSession(headers=headers) as session:
         for batch in chunked(body, 100):
-            async with session.post(GET_ADS_STATS_URL, body=batch) as response:
+            async with session.post(GET_ADS_STATS_URL, json=batch) as response:
                 data = await response.json()
                 response.raise_for_status()
                 result.extend(data)
