@@ -22,7 +22,7 @@ MINIO_BUCKET = os.getenv("MINIO_BUCKET")
 async def handle_message(msg):
     task_id = msg["task_id"]
     api_token = msg["wb_token"]
-    load_date = msg["load_date "]
+    load_date = msg["load_date"]
     minio_key = msg["minio_key"]
 
     logging.info(f"Start processing task {task_id}")
