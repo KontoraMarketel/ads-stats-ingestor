@@ -12,8 +12,7 @@ logging.basicConfig(level=logging.INFO)
 
 BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP_SERVERS")
 CONSUMER_TOPIC = os.getenv("KAFKA_INGEST_COMMISSIONS_TASKS_TOPIC")
-PRODUCER_INGEST_ADS_STATS_TOPIC = os.getenv("KAFKA_PRODUCER_INGEST_ADS_STATS_TOPIC")
-PRODUCER_INGEST_ADS_INFO_TOPIC = os.getenv("KAFKA_PRODUCER_INGEST_ADS_INFO_TOPIC")
+PRODUCER_TOPIC = os.getenv("KAFKA_PRODUCER_STG_ADS_STATS_TASKS")
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY")
 MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY")
@@ -80,15 +79,9 @@ async def main():
         async for msg in consumer:
             try:
                 next_msg = await handle_message(msg.value)
-
                 encoded_task_id = str(next_msg["task_id"]).encode("utf-8")
                 await producer.send(
-                    PRODUCER_INGEST_ADS_STATS_TOPIC,
-                    value=next_msg,
-                    key=encoded_task_id,
-                )
-                await producer.send(
-                    PRODUCER_INGEST_ADS_INFO_TOPIC,
+                    PRODUCER_TOPIC,
                     value=next_msg,
                     key=encoded_task_id,
                 )

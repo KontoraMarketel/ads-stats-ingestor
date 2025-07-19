@@ -4,9 +4,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      KAFKA_INGEST_COMMISSIONS_TASKS_TOPIC: ingest-all-ads-ids-tasks
-      KAFKA_PRODUCER_INGEST_ADS_STATS_TOPIC: ingest-ads-stats-tasks
-      KAFKA_PRODUCER_INGEST_ADS_INFO_TOPIC: ingest-ads-info-tasks
+      KAFKA_INGEST_COMMISSIONS_TASKS_TOPIC: ingest-ads-stats-tasks
+      KAFKA_PRODUCER_STG_ADS_STATS_TASKS: stg-ads-stats-tasks
       KAFKA_BOOTSTRAP_SERVERS: kafka-compose-kafka-broker-1:9092
       MINIO_ENDPOINT: http://minio:9000
       MINIO_ACCESS_KEY: minioadmin
