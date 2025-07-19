@@ -35,6 +35,8 @@ async def handle_message(msg):
         key=minio_key,
     )
 
+    logging.info(f"Campaigns IDs: {campaigns_ids}")
+
     data = await fetch_data(api_token, campaigns_ids, load_date)
     filename = "all-ads-campaigns-ids.json"
     prefix = f"{load_date}/{task_id}/"
