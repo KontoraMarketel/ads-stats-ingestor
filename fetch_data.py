@@ -16,7 +16,7 @@ async def fetch_data(api_token: str, campaigns: list, ts: str) -> list:
     # TODO: пока что норм, но в будущем переделать. Тк сейчас мы обрабатываем только те компании, которые активны на момент получения данных. Но мы в системе обрабатываем данные за прошлые сутки, а компания вчера могла быть активной, а сегодня до получения данных ее остановили, и она не учитывается. Надо как то шарить данные по активным кампаниям за вчера
     campaigns_with_correct_status = []
     for i in campaigns:
-        if int(i['status']) == 9:
+        if i['status'] == 9:
             campaigns_with_correct_status.extend([i['advertId'] for i in i['advert_list']])
 
     body = [{"id": cid, "dates": [yesterday]} for cid in campaigns_with_correct_status]
