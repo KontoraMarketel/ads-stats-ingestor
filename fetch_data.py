@@ -9,9 +9,9 @@ GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v2/fullstats"
 
 
 # <ts> это дата когда выполняется функция, найди от нее вчерашнюю дату и используй
-async def fetch_data(api_token: str, campaign_ids: list, load_date: str) -> list:
+async def fetch_data(api_token: str, campaign_ids: list, ts: str) -> list:
     headers = {"Authorization": api_token}
-    dt_ts = datetime.fromisoformat(load_date)
+    dt_ts = datetime.fromisoformat(ts)
     yesterday = (dt_ts - timedelta(days=1)).strftime("%Y-%m-%d")
     result = []
     body = [{"id": cid, "dates": [yesterday]} for cid in campaign_ids]

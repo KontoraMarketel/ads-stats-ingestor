@@ -22,7 +22,7 @@ MINIO_BUCKET = os.getenv("MINIO_BUCKET")
 async def handle_message(msg):
     task_id = msg["task_id"]
     api_token = msg["wb_token"]
-    load_date = msg["load_date"]
+    ts = msg["ts"]
     minio_key = msg["minio_key"]
 
     logging.info(f"Start processing task {task_id}")
@@ -37,9 +37,9 @@ async def handle_message(msg):
 
     logging.info(f"Campaigns IDs: {campaigns_ids}")
 
-    data = await fetch_data(api_token, campaigns_ids, load_date)
+    data = await fetch_data(api_token, campaigns_ids, ts)
     filename = "ads_stats.json"
-    prefix = f"{load_date}/{task_id}/"
+    prefix = f"{ts}/{task_id}/"
     minio_key = prefix + filename
 
     await upload_to_minio(
@@ -55,7 +55,7 @@ async def handle_message(msg):
 
     return {
         "task_id": task_id,
-        "load_date": load_date,
+        "ts": ts,
         "minio_key": minio_key
     }
 
