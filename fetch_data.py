@@ -19,7 +19,9 @@ async def fetch_data(api_token: str, campaign_ids: list, load_date: str) -> list
         for batch in chunked(body, 100):
             async with session.post(GET_ADS_STATS_URL, json=batch) as response:
                 data = await response.json()
-                logging.info(f"Server Response: {data}")
+                if response.status != 200:
+                    logging.error(
+                        f"Error fetching {batch}, server response code: {response.status}, server response: {data}")
                 response.raise_for_status()
                 result.extend(data)
     return result
