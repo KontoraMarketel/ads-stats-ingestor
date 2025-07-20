@@ -27,7 +27,7 @@ async def handle_message(msg):
 
     logging.info(f"Start processing task {task_id}")
 
-    campaigns_ids = await download_from_minio(
+    campaigns = await download_from_minio(
         endpoint_url=MINIO_ENDPOINT,
         access_key=MINIO_ACCESS_KEY,
         secret_key=MINIO_SECRET_KEY,
@@ -35,9 +35,9 @@ async def handle_message(msg):
         key=minio_key,
     )
 
-    logging.info(f"Campaigns IDs: {campaigns_ids}")
+    logging.info(f"Campaigns IDs: {campaigns}")
 
-    data = await fetch_data(api_token, campaigns_ids, ts)
+    data = await fetch_data(api_token, campaigns, ts)
     filename = "ads_stats.json"
     prefix = f"{ts}/{task_id}/"
     minio_key = prefix + filename
