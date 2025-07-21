@@ -8,14 +8,15 @@ GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v2/fullstats"
 
 
 # <ts> это дата когда выполняется функция, найди от нее вчерашнюю дату и используй
-async def fetch_data(api_token: str, campaigns: list, ts: str) -> list:
+async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
     headers = {"Authorization": api_token}
     yesterday = get_yesterday_moscow_from_utc(ts)
     result = []
+    campaigns_list = campaigns['data']
 
     # TODO: пока что норм, но в будущем переделать. Тк сейчас мы обрабатываем только те компании, которые активны на момент получения данных. Но мы в системе обрабатываем данные за прошлые сутки, а компания вчера могла быть активной, а сегодня до получения данных ее остановили, и она не учитывается. Надо как то шарить данные по активным кампаниям за вчера
     campaigns_with_correct_status = []
-    for i in campaigns:
+    for i in campaigns_list:
         if i['status'] == 9:
             campaigns_with_correct_status.extend([i['advertId'] for i in i['advert_list']])
 
