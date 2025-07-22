@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 import aiohttp
@@ -23,11 +24,19 @@ async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
     body = [{"id": cid, "dates": [yesterday]} for cid in campaigns_with_correct_status]
     async with aiohttp.ClientSession(headers=headers) as session:
         for batch in chunked(body, 100):
-            async with session.post(GET_ADS_STATS_URL, json=batch) as response:
-                data = await response.json()
-                if response.status != 200:
-                    logging.error(
-                        f"Error fetching {batch}, server response code: {response.status}, server response: {data}")
-                response.raise_for_status()
-                result.extend(data)
+            data = await fetch_page_with_retry(session, GET_ADS_STATS_URL, batch)
+            result.extend(data)
     return result
+
+
+async def fetch_page_with_retry(session, url, payload):
+    while True:
+        async with session.get(url, json=payload) as response:
+            if response.status == 429:
+                retry_after = int(response.headers.get('X-Ratelimit-Retry', 10))
+                logging.warning(f"Rate limited (429). Retrying after {retry_after} seconds...")
+                await asyncio.sleep(retry_after)
+                continue
+
+            response.raise_for_status()
+            return await response.json()
