@@ -31,7 +31,7 @@ async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
 
 async def fetch_page_with_retry(session, url, payload):
     while True:
-        async with session.get(url, json=payload) as response:
+        async with session.post(url, json=payload) as response:
             if response.status == 429:
                 retry_after = int(response.headers.get('X-Ratelimit-Retry', 10))
                 logging.warning(f"Rate limited (429). Retrying after {retry_after} seconds...")
