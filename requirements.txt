@@ -3,3 +3,4 @@ aioboto3~=15.0.0
 aiohttp~=3.12.14
 aiobotocore~=2.23.0
 types-aiobotocore-s3~=2.23.1
+minio_pool_goginski @ https://github.com/KontoraMarketel/minio-pool-lib@v0.1.0
