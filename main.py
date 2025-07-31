@@ -116,6 +116,7 @@ async def main():
         logging.info("Stopping consumer. Waiting for tasks to finish...")
         await consumer.stop()
         await producer.stop()
+        await minio_pool.stop()
         await asyncio.gather(*tasks, return_exceptions=True)
 
 
