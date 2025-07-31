@@ -105,6 +105,7 @@ async def main():
 
     await minio_pool.start()
     await producer.start()
+    await consumer.start()
     tasks = set()
     try:
         async for msg in consumer:
