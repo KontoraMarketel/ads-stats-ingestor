@@ -25,7 +25,12 @@ async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
 
     async with aiohttp.ClientSession(headers=headers) as session:
         for ids_batch in chunked(campaigns_with_correct_status, 100):
-            body = {"ids": ids_batch, "beginDate": yesterday, "endDate": yesterday}
+            logging.info(f"Fetching data for IDs: {ids_batch}")
+            body = {
+                "ids": ",".join(map(str, ids_batch)),  # <-- ключевой момент
+                "beginDate": yesterday,
+                "endDate": yesterday,
+            }
             data = await fetch_page_with_retry(session, GET_ADS_STATS_URL, body)
             result.extend(data)
     return result
