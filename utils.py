@@ -4,7 +4,8 @@ from zoneinfo import ZoneInfo
 
 def chunked(data, size):
     for i in range(0, len(data), size):
-        yield data[i:i + size]
+        yield data[i : i + size]
+
 
 def get_yesterday_moscow_from_utc(utc_time: str) -> str:
     # Преобразуем в datetime с учётом часового пояса UTC
@@ -17,4 +18,3 @@ def get_yesterday_moscow_from_utc(utc_time: str) -> str:
     # Приводим к нужному формату
     formatted = yesterday_moscow.strftime("%Y-%m-%d")
     return formatted
-
