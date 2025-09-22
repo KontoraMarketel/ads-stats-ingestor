@@ -1,9 +1,9 @@
 import asyncio
 import logging
-
+from datetime import datetime, timedelta
 import aiohttp
 
-from utils import chunked, get_yesterday_moscow_from_utc
+from utils import chunked
 
 GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v3/fullstats"
 
@@ -11,7 +11,8 @@ GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v3/fullstats"
 # <ts> это дата когда выполняется функция, найди от нее вчерашнюю дату и используй
 async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
     headers = {"Authorization": api_token}
-    yesterday = get_yesterday_moscow_from_utc(ts)
+    dt_ts = datetime.strptime(ts, "%Y-%m-%d")
+    yesterday = (dt_ts - timedelta(days=1)).strftime("%Y-%m-%d")
     result = []
     campaigns_list = campaigns["data"]
 
