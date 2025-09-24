@@ -7,14 +7,22 @@ def chunked(data, size):
         yield data[i : i + size]
 
 
-def get_yesterday_moscow_from_utc(utc_time: str) -> str:
-    # Преобразуем в datetime с учётом часового пояса UTC
-    dt = datetime.fromisoformat(utc_time)
-    # Переводим во временную зону Europe/Moscow
-    dt_moscow = dt.astimezone(ZoneInfo("Europe/Moscow"))
+def get_yesterday_bounds_msk(ts: str):
+    """
+    Принимает строку с UTC-временем (ISO8601),
+    возвращает (date_from, date_to) — календарные даты вчерашнего дня по МСК.
+    Оба значения одинаковые → закрытый интервал [вчера, вчера].
+    """
+    # парсим входное UTC-время
+    dt_utc = datetime.fromisoformat(ts)
 
-    # Вычитаем 1 день
-    yesterday_moscow = dt_moscow - timedelta(days=1)
-    # Приводим к нужному формату
-    formatted = yesterday_moscow.strftime("%Y-%m-%d")
-    return formatted
+    # часовой пояс МСК
+    msk_zone = ZoneInfo("Europe/Moscow")
+
+    # конвертируем в МСК
+    dt_msk = dt_utc.astimezone(msk_zone)
+
+    # вчерашняя дата по МСК
+    yesterday = dt_msk.date() - timedelta(days=1)
+
+    return yesterday, yesterday

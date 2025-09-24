@@ -3,7 +3,7 @@ import logging
 from datetime import datetime, timedelta
 import aiohttp
 
-from utils import chunked
+from utils import chunked, get_yesterday_bounds_msk
 
 GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v3/fullstats"
 
@@ -11,8 +11,7 @@ GET_ADS_STATS_URL = "https://advert-api.wildberries.ru/adv/v3/fullstats"
 # <ts> это дата когда выполняется функция, найди от нее вчерашнюю дату и используй
 async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
     headers = {"Authorization": api_token}
-    dt_ts = datetime.strptime(ts, "%Y-%m-%d")
-    yesterday = (dt_ts - timedelta(days=1)).strftime("%Y-%m-%d")
+    date_from, date_to = get_yesterday_bounds_msk(ts)
     result = []
     campaigns_list = campaigns["data"]
 
@@ -29,8 +28,8 @@ async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
             logging.info(f"Fetching data for IDs: {ids_batch}")
             body = {
                 "ids": ",".join(map(str, ids_batch)),  # <-- ключевой момент
-                "beginDate": yesterday,
-                "endDate": yesterday,
+                "beginDate": date_from,
+                "endDate": date_to,
             }
             data = await fetch_page_with_retry(session, GET_ADS_STATS_URL, body)
             result.extend(data)
