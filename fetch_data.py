@@ -1,6 +1,5 @@
 import asyncio
 import logging
-from datetime import datetime, timedelta
 import aiohttp
 
 from utils import chunked, get_yesterday_bounds_msk
@@ -25,11 +24,13 @@ async def fetch_data(api_token: str, campaigns: dict, ts: str) -> list:
 
     async with aiohttp.ClientSession(headers=headers) as session:
         for ids_batch in chunked(campaigns_with_correct_status, 100):
-            logging.info(f"Fetching data for IDs: {ids_batch}")
+            logging.info(
+                f"Fetching data for IDs: {ids_batch}, begin_date {str(date_from)} end_date {str(date_to)}"
+            )
             body = {
                 "ids": ",".join(map(str, ids_batch)),  # <-- ключевой момент
-                "beginDate": date_from,
-                "endDate": date_to,
+                "beginDate": str(date_from),
+                "endDate": str(date_to),
             }
             data = await fetch_page_with_retry(session, GET_ADS_STATS_URL, body)
             result.extend(data)
